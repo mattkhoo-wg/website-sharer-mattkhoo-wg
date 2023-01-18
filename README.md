@@ -1,2 +1,3 @@
-# express-starter
-This is a starter project for Express. It was created with the express project generator and then modified to be a module type (uses imports instead of requires, based on this tutorial), and with VSCode launch settings.
+I centered all the elements in the page and I added margins around the image so that the overall display looks less crowded.
+
+https://www.keithandthegirl.com/vip/bonus/episode/9/40/this-is-40 - I have added my code tto display any og:video tags
