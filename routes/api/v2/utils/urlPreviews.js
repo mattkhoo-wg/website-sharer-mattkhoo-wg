@@ -1,21 +1,17 @@
 import fetch from 'node-fetch';
-import parser from 'node-html-parser';
-import express from 'express';
-var router = express.Router();
 
-router.get('/urls/preview', async (req, res) => {
+import parser from 'node-html-parser';
+
+async function getURLPreview(url){
     let pageText
-    let url
     try {
-        url = req.query.url
         let response = await fetch(url)
         pageText = await response.text()
     } catch (err) {
         console.log(err)
-        res.send(err)
+        return(err)
     }
     let htmlPage = parser.parse(pageText)
-    
     // get url image, description.
     let ogUrl = htmlPage.querySelector('meta[property="og:url"]')
     let urlContent
@@ -78,8 +74,8 @@ router.get('/urls/preview', async (req, res) => {
     }
     responseHTML += `</div>`
 
-    res.type("html")
-    res.send(responseHTML)
-})
+    return responseHTML
+}
 
-export default router;
+
+export default getURLPreview;
