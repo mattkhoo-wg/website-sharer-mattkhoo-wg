@@ -18,13 +18,14 @@ async function loadPosts(){
 
 async function postUrl(){
     document.getElementById("postStatus").innerHTML = "sending data..."
+    let name = document.getElementById("nameInput").value;
     let url = document.getElementById("urlInput").value;
     let description = document.getElementById("descriptionInput").value;
 
     try{
         await fetchJSON(`api/${apiVersion}/posts`, {
             method: "POST",
-            body: {url: url, description: description}
+            body: {name: name, url: url, description: description}
         })
     }catch(error){
         document.getElementById("postStatus").innerText = "Error"
