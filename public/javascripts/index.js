@@ -1,31 +1,29 @@
-function init(){
+async function init(){
     let urlInput = document.getElementById("urlInput");
     urlInput.onkeyup = previewUrl;
     urlInput.onchange = previewUrl;
     urlInput.onclick = previewUrl;
+
+    await loadIdentity();
     loadPosts();
 }
 
 async function loadPosts(){
     document.getElementById("posts_box").innerText = "Loading...";
     let postsJson = await fetchJSON(`api/${apiVersion}/posts`)
-    
-    let postsHtml = postsJson.map(postInfo => {
-        return `<div class="post"><p>${postInfo.name}</p>${postInfo.description}${postInfo.htmlPreview}</div>`
-    }).join("\n");
+    let postsHtml = createPostsHtml(postsJson)
     document.getElementById("posts_box").innerHTML = postsHtml;
 }
 
 async function postUrl(){
     document.getElementById("postStatus").innerHTML = "sending data..."
-    let name = document.getElementById("nameInput").value;
     let url = document.getElementById("urlInput").value;
     let description = document.getElementById("descriptionInput").value;
 
     try{
         await fetchJSON(`api/${apiVersion}/posts`, {
             method: "POST",
-            body: {name: name, url: url, description: description}
+            body: {url: url, description: description}
         })
     }catch(error){
         document.getElementById("postStatus").innerText = "Error"
@@ -34,9 +32,11 @@ async function postUrl(){
     document.getElementById("urlInput").value = "";
     document.getElementById("descriptionInput").value = "";
     document.getElementById("url_previews").innerHTML = "";
-    document.getElementById("postStatus").innerHTML = "successfully uploaded"
+    document.getElementById("postStatus").innerText = "successfully uploaded"
     loadPosts();
+    
 }
+
 
 
 let lastTypedUrl = ""
@@ -68,7 +68,7 @@ async function previewUrl(){
             lastURLPreviewed = url; // mark this url as one we are previewing
             document.getElementById("url_previews").innerHTML = "Loading preview..."
             try{
-                let response = await fetch(`api/${apiVersion}/urls/preview?url=` + url)
+                let response = await fetch(`api/${apiVersion}/urls/preview?url=` + encodeURIComponent(url))
                 let previewHtml = await response.text()
                 if(url == lastURLPreviewed){
                     document.getElementById("url_previews").innerHTML = previewHtml;
@@ -79,4 +79,3 @@ async function previewUrl(){
         }
     }
 }
-

@@ -17,7 +17,7 @@ router.post('/', async(req, res) => {
         res.json({"status": "success"})
     }catch(err){
         console.log(err)
-        res.status(500).json({"status": "error", "error": err})
+        res.status(500).json({status: "error", error: err})
     }
     
 })
@@ -28,11 +28,10 @@ router.get('/', async (req, res) => {
         allPosts.map(async post => { 
             try{
                 let responseHTML = await getURLPreview(post.url)
-                //let responseHTML = await response.text()
                 return {name:post.username, description: post.description, htmlPreview: responseHTML}
             }catch(err){
                 console.log(err)
-                res.status(500).json({"status": "error", "error": err})
+                res.status(500).json({status: "error", error: err})
                 return;
             }
         })
