@@ -11,7 +11,7 @@ const appSettings = {
         clientSecret: "MCC8Q~SryBfhyBBVnLXf2eFXWAnbMoNKulFAoc1-"
     },
     authRoutes: {
-        redirect: "https://www.mkhoo98.me//redirect", //change to mkhoo.me/redirect later
+        redirect: "https://www.mkhoo98.me/redirect", //change to mkhoo.me/redirect later
         err: "/error",
         unauthorized: "/unauthorized"
     }
