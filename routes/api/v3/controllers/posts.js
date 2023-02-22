@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
         allPosts.map(async post => { 
             try{
                 let responseHTML = await getURLPreview(escapeHTML(post.url))
-                return {username:post.username, description: post.description, htmlPreview: responseHTML}
+                return {id: post._id, username: post.username, description: post.description, likes: post.likes, created_date: post.created_date, htmlPreview: responseHTML}
             }catch(err){
                 console.log(err)
                 res.status(500).json({"status": "error", "error": err})
@@ -56,6 +56,67 @@ router.get('/', async (req, res) => {
     );
     res.json(postData)
     
+})
+
+router.post('/like', async (req, res) => {
+    if(req.session.isAuthenticated){
+        try{
+            let post = await req.models.Post.find({_id: req.body.postID})
+            post = post[0]
+            console.log(post)
+            if(!post.likes.includes(req.session.account.username)){
+                post.likes.push(req.session.account.username)
+                await post.save()
+                res.json({"status": "success"})
+            }
+        } catch(err) {
+            console.log(err)
+            res.status(500).json({"status": "error", "error": err})
+        }
+    } else {
+        res.status(401).json({"status": "error", "error": "You must be logged in to like a post"})
+    }
+})
+
+router.post('/unlike', async (req, res) => {
+    if(req.session.isAuthenticated){
+        try{
+            let post = await req.models.Post.find({_id: req.body.postID})
+            post = post[0]
+            if(post.likes.includes(req.session.account.username)){
+                post.likes = post.likes.filter(username => username !== req.session.account.username)
+                await post.save()
+                res.json({"status": "success"})
+            }
+        } catch(err) {
+            console.log(err)
+            res.status(500).json({"status": "error", "error": err})
+        }
+    } else {
+        res.status(401).json({"status": "error", "error": "You must be logged in to like a post"})
+    }
+})
+
+router.delete('/', async (req, res) => {
+    if(req.session.isAuthenticated){
+        try{
+            let post = await req.models.Post.find({_id: req.body.postID})
+            post = post[0]
+            if(post.username != req.session.account.username){
+                res.status(401).json({"status": "error", "error": "You can only delete your own posts"})
+            } else {
+                await req.models.Comment.deleteMany({post: req.body.postID})
+                await req.models.Post.deleteOne({_id: req.body.postID})
+                res.json({"status": "success"})
+            }
+        }catch(err){
+            console.log(err)
+            res.status(500).json({"status": "error", "error": err})
+        }
+        
+    } else {
+        res.status(401).json({"status": "error", "error": "You must be logged in to delete a post"})
+    }
 })
 
 export default router;

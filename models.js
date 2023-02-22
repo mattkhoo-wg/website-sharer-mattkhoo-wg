@@ -10,9 +10,18 @@ const postSchema = new mongoose.Schema({
     username: String,
     url: String,
     description: String,
+    likes: [String],
+    created_date: Date
+})
+
+const commentSchema = new mongoose.Schema({
+    username: String,
+    comment: String,
+    post: mongoose.SchemaTypes.ObjectId,
     created_date: Date
 })
 
 models.Post = mongoose.model('Post', postSchema)
+models.Comment = mongoose.model('Comment', commentSchema)
 
 export default models
