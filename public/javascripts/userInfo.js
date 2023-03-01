@@ -6,6 +6,14 @@ async function init(){
 async function saveUserInfo(){
     //TODO: do an ajax call to save whatever info you want about the user from the user table
     //see postComment() in the index.js file as an example of how to do this
+    let userInfo = document.getElementById("favColor").value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('user');
+
+    let responseJson = await fetchJSON(`api/${apiVersion}/users?username=${encodeURIComponent(username)}`, {
+        method: "POST",
+        body: {userInfo: userInfo}
+    })
 }
 
 async function loadUserInfo(){
@@ -21,7 +29,14 @@ async function loadUserInfo(){
     }
     
     //TODO: do an ajax call to load whatever info you want about the user from the user table
-
+    let userInfo = await fetchJSON(`api/${apiVersion}/users?username=${encodeURIComponent(username)}`);
+    //return html to display the info
+    let userInfoHTML = `
+        <div class="user-info">
+            <div>Favorite Color: ${userInfo.favColor}</div>
+        </div>
+    `
+    document.getElementById("user_info_div").innerHTML = userInfoHTML;
     loadUserInfoPosts(username)
 }
 
