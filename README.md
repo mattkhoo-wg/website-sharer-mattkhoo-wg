@@ -7,4 +7,4 @@ I did this on my own
 https://drab-plum-binturong-kilt.cyclic.app/ - link to my website
 
 ##A6
-https://mkhoo98.me - deployed azure app
+https://www.mkhoo98.me/ - deployed azure app
